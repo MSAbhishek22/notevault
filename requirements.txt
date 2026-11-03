@@ -1,0 +1,5 @@
+# Runtime: stdlib only, except the Otari SDK (needed only for --provider otari).
+# Install it only when you have an Otari.ai account/token to use with it.
+otari
+# Tests: pytest (install separately if not present: pip install pytest)
+pytest

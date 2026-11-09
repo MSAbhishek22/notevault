@@ -53,12 +53,13 @@ if your notes do not match, it refuses instead of guessing.</p>
 <div class="card"><h3>Your notes</h3><div id="notes">Loading…</div><h3>Note preview</h3><pre id="preview">Click a note.</pre></div>
 <div class="card"><h3>Ask</h3>
 <label>Question <input id="q" placeholder="What is Abhiverse for?"></label><br><br>
-<label>Model (provider:model, routed by Otari)
+<label>Model (provider:model or vendor/model, routed by Otari)
 <select id="model">
 <option value="">Default (from configuration)</option>
 <option value="openai:gpt-4o-mini">openai:gpt-4o-mini — documented example</option>
+<option value="mistralai/mistral-small-latest">mistralai/mistral-small-latest — Otari dashboard ID</option>
 </select></label>
-<label>…or a custom model string <input id="customModel" placeholder="provider:model"></label><br><br>
+<label>…or a custom model string <input id="customModel" placeholder="provider:model or vendor/model"></label><br><br>
 <button onclick="ask()">Ask</button>
 <button onclick="askPreset('What is Abhiverse for?')">Try: Abhiverse</button>
 <button onclick="askPreset('quantum bananas')">Try: refusal</button>

@@ -83,6 +83,15 @@ def test_otari_provider_uses_injected_client(tmp_path):
     assert fake.calls[0][1][0] == {"role": "system", "content": "sys"}
 
 
+def test_otari_provider_passes_slash_dashboard_id_unchanged():
+    # The dashboard model ID is the full string the gateway routes on:
+    # it must reach the SDK verbatim, not rewritten into colon form.
+    fake = FakeOtariClient()
+    provider = OtariProvider(model="mistralai/mistral-small-latest", client=fake)
+    assert provider.complete("sys", "hello") == "Fake Otari answer."
+    assert fake.calls[0][0] == "mistralai/mistral-small-latest"
+
+
 def test_otari_provider_without_credentials_raises_before_network():
     with pytest.raises(RuntimeError, match="No Otari credentials"):
         OtariProvider(model="openai:gpt-4o-mini")

@@ -4,8 +4,11 @@ This is the sharpened product idea, and it is deliberately boring
 in the right way: nothing here invents a gateway feature.
 
 - Otari is one gateway in front of many providers. The model string
-  is ``provider:model`` (e.g. ``openai:gpt-4o-mini``) and Otari routes
-  it. Switching providers changes the string, not the code.
+  is ``provider:model`` (e.g. ``openai:gpt-4o-mini``) or the dashboard
+  ``vendor/model`` form (e.g. ``mistralai/mistral-small-latest``),
+  and Otari routes it. Switching providers changes the string, not
+  the code. The full string is passed to the Otari SDK unchanged;
+  the split here is only for the routing display and validation.
 - Routing in this project is therefore a *visible decision*: which
   provider/model was chosen, why, what the fallback chain is, and
   which routes were actually attempted. The UI shows that panel for
@@ -68,21 +71,40 @@ class RoutingInfo:
 
 
 def parse_model(model: str) -> tuple[str, str]:
-    """Split a ``provider:model`` string. Raises ValueError if malformed.
+    """Split a model string into (provider, model-name).
 
-    A model string without a ``:`` cannot be routed by Otari, so it
-    is rejected here rather than passed on and failing obscurely.
+    Two forms are accepted, because Otari's dashboard lists model IDs
+    in both:
+    - ``provider:model`` (e.g. ``openai:gpt-4o-mini``) — split on ``:``.
+    - ``vendor/model`` (e.g. ``mistralai/mistral-small-latest``) —
+      split on the first ``/``.
+    The split is only for the routing display and validation. The
+    full original string is what the Otari SDK receives (see
+    ``llm.OtariProvider``) — it is never rewritten here. A model
+    string with neither separator, or with an empty provider or
+    model-name part, is rejected here rather than passed on and
+    failing obscurely.
     """
-    if not model or ":" not in model:
-        raise ValueError(
-            f"Model string must be provider:model (e.g. openai:gpt-4o-mini), got {model!r}"
-        )
-    provider, rest = model.split(":", 1)
+    if not model:
+        raise ValueError(_model_error(model))
+    colon = model.find(":")
+    slash = model.find("/")
+    if colon == -1 and slash == -1:
+        raise ValueError(_model_error(model))
+    if slash != -1 and (colon == -1 or slash < colon):
+        provider, rest = model.split("/", 1)
+    else:
+        provider, rest = model.split(":", 1)
     if not provider.strip() or not rest.strip():
-        raise ValueError(
-            f"Model string must be provider:model (e.g. openai:gpt-4o-mini), got {model!r}"
-        )
+        raise ValueError(_model_error(model))
     return provider.strip(), rest.strip()
+
+
+def _model_error(model: str) -> str:
+    return (
+        "Model string must be provider:model (e.g. openai:gpt-4o-mini) "
+        f"or vendor/model (e.g. mistralai/mistral-small-latest), got {model!r}"
+    )
 
 
 def choose_route(

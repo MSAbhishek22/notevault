@@ -28,7 +28,9 @@ same gateway on your own infrastructure (port 8000 by default).
 - Env names used by the SDK: `OTARI_AI_TOKEN` (canonical, hosted),
   legacy alias `GATEWAY_PLATFORM_TOKEN`; self-hosted:
   `GATEWAY_API_BASE` + `GATEWAY_API_KEY`
-- Model strings are `provider:model` (e.g. `openai:gpt-4o-mini`)
+- Model strings are `provider:model` (e.g. `openai:gpt-4o-mini`) or
+  the dashboard `vendor/model` form (e.g. `mistralai/mistral-small-latest`).
+  The full string is passed to the SDK unchanged.
 
 ## What this project verified, and what it did not
 
@@ -56,8 +58,9 @@ NOT verified / NOT done:
 
 ## Routing + budget — what is Otari's, what is this project's
 
-Otari's (verified gateway behaviour): one endpoint, `provider:model`
-model strings, routing to the named provider, token auth. This
+Otari's (verified gateway behaviour): one endpoint, model strings in
+`provider:model` or dashboard `vendor/model` form, routing to the
+named provider, token auth. This
 project does not re-implement routing — it *exposes* it. The web UI
 and `run.py status` show the gateway, the chosen provider/model and
 its reason, the fallback chain, and the routes actually attempted,

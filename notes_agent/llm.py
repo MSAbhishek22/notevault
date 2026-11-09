@@ -15,6 +15,12 @@ https://api.otari.ai. For a self-hosted gateway, pass
 api_base="http://localhost:8000" (origin only, no /api/v1 suffix) and
 api_key=<gateway key>; the SDK appends /api/v1 itself.
 
+The model string is passed to the SDK exactly as configured — the
+``provider:model`` form (``openai:gpt-4o-mini``) and the dashboard
+``vendor/model`` form (``mistralai/mistral-small-latest``) are both
+valid; nothing in this module rewrites the string. Only
+``routing.parse_model`` splits it, for display and validation.
+
 Mock path: deterministic, offline, no network. Used when no token is
 configured, so the demo and tests always run. Mock output is always
 prefixed "[mock]" so it can never be mistaken for a real Otari answer.

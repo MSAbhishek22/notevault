@@ -17,7 +17,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="notevault", description="Local-first notes agent via Otari")
     parser.add_argument("--notes", default=None, help="Notes folder (default: notes/ or $NOTES_ROOT)")
     parser.add_argument("--provider", default=None, choices=["auto", "mock", "otari"])
-    parser.add_argument("--model", default=None, help="Otari model, e.g. openai:gpt-4o-mini")
+    parser.add_argument("--model", default=None, help="Otari model, e.g. openai:gpt-4o-mini or mistralai/mistral-small-latest")
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("index", help="List indexed notes")
     p_search = sub.add_parser("search", help="Keyword search over notes")

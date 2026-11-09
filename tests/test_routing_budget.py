@@ -29,9 +29,26 @@ def _seed(tmp_path):
 
 def test_parse_model_valid_and_invalid():
     assert parse_model("openai:gpt-4o-mini") == ("openai", "gpt-4o-mini")
-    for bad in ("", "gpt-4o-mini", "openai:", ":gpt-4o-mini"):
+    # Colon form with a slash-form model name is unchanged.
+    assert parse_model("mistral:mistral-small-latest") == ("mistral", "mistral-small-latest")
+    # Otari dashboard IDs use the vendor/model slash form: split on the
+    # first slash for the provider, keep the full ID as the model name.
+    assert parse_model("mistralai/mistral-small-latest") == ("mistralai", "mistral-small-latest")
+    assert parse_model("together-ai/meta-llama/Llama-3-8b") == ("together-ai", "meta-llama/Llama-3-8b")
+    for bad in ("", "gpt-4o-mini", "openai:", ":gpt-4o-mini", "mistralai/", "/mistral-small-latest", "mistralai"):
         with pytest.raises(ValueError, match="provider:model"):
             parse_model(bad)
+
+
+def test_choose_route_slash_form_keeps_full_id():
+    route = choose_route("mistralai/mistral-small-latest", gateway="https://api.otari.ai", mode="mock")
+    assert route.chosen.provider == "mistralai"
+    assert route.chosen.model == "mistralai/mistral-small-latest"
+    assert route.to_dict()["chosen"] == {
+        "provider": "mistralai",
+        "model": "mistralai/mistral-small-latest",
+        "reason": route.chosen.reason,
+    }
 
 
 def test_choose_route_default_and_user_selected_reasons():
@@ -117,6 +134,34 @@ def test_bad_user_model_rejected_before_llm_call(tmp_path):
     agent = NotesAgent(_config(tmp_path), provider=MockProvider())
     with pytest.raises(ValueError, match="provider:model"):
         agent.ask_detailed("Abhiverse", model="not-a-model-string")
+    assert agent.budget.used == 0
+
+
+def test_slash_model_from_config_routes_with_full_id(tmp_path):
+    _seed(tmp_path)
+    config = _config(tmp_path, model="mistralai/mistral-small-latest")
+    agent = NotesAgent(config, provider=MockProvider())
+    result = agent.ask_detailed("What is Abhiverse?")
+    assert result.routing["chosen"]["provider"] == "mistralai"
+    assert result.routing["chosen"]["model"] == "mistralai/mistral-small-latest"
+    assert result.routing["attempted"] == ["mistralai/mistral-small-latest"]
+    assert "[mock]" in result.answer
+
+
+def test_user_selected_slash_model_is_recorded_and_used(tmp_path):
+    _seed(tmp_path)
+    agent = NotesAgent(_config(tmp_path), provider=MockProvider())
+    result = agent.ask_detailed("Abhiverse", model="mistralai/mistral-small-latest")
+    assert result.routing["chosen"]["provider"] == "mistralai"
+    assert result.routing["chosen"]["model"] == "mistralai/mistral-small-latest"
+    assert "User-selected" in result.routing["chosen"]["reason"]
+
+
+def test_bad_slash_user_model_rejected_before_llm_call(tmp_path):
+    _seed(tmp_path)
+    agent = NotesAgent(_config(tmp_path), provider=MockProvider())
+    with pytest.raises(ValueError, match="provider:model"):
+        agent.ask_detailed("Abhiverse", model="mistralai/")
     assert agent.budget.used == 0
 
 

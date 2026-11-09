@@ -22,7 +22,7 @@ same gateway on your own infrastructure (port 8000 by default).
 - `OtariClient(api_base="http://localhost:8000", api_key=...)` —
   self-hosted mode; `api_base` is the origin only, the SDK appends
   `/api/v1` itself
-- `client.completion(model="openai:gpt-4o-mini", messages=[...])`
+- `client.completion(model="mistralai/mistral-small-latest", messages=[...])`
   returns a typed chat completion; text at
   `response.choices[0].message.content`
 - Env names used by the SDK: `OTARI_AI_TOKEN` (canonical, hosted),

@@ -30,7 +30,7 @@ Show, in order, and narrate each one:
 - The answer, quoting the note itself.
 - The citation chip: "Abhiverse idea".
 - The **Routing panel**: gateway `https://api.otari.ai`, chosen
-  `openai / openai:gpt-4o-mini`, reason "Default model from
+  `mistralai / mistralai/mistral-small-latest`, reason "Default model from
   configuration — routed through Otari unchanged", attempted route
   listed, fallback chain (none configured in this run, or the
   fallback model if you set `OTARI_FALLBACK_MODEL`).

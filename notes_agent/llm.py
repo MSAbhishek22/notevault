@@ -6,7 +6,7 @@ package, version from PyPI):
     from otari import OtariClient
     client = OtariClient(platform_token=<OTARI_AI_TOKEN>)
     response = client.completion(
-        model="openai:gpt-4o-mini",
+        model="mistralai/mistral-small-latest",
         messages=[{"role": "user", "content": "..."}],
     )
     text = response.choices[0].message.content

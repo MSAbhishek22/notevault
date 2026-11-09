@@ -85,8 +85,8 @@ def test_ask_detailed_shows_routing_budget_citations_and_mock_label(tmp_path):
     assert result.mode == "mock"
     assert result.sources == [{"title": "Abhiverse idea", "rel_path": "a.md"}]
     assert result.routing["gateway"] == "https://api.otari.ai"
-    assert result.routing["chosen"]["model"] == "openai:gpt-4o-mini"
-    assert result.routing["attempted"] == ["openai:gpt-4o-mini"]
+    assert result.routing["chosen"]["model"] == "mistralai/mistral-small-latest"
+    assert result.routing["attempted"] == ["mistralai/mistral-small-latest"]
     assert result.routing["fallback_used"] is False
     assert result.budget["used"] == 1 and result.budget["remaining"] == 4
     assert "[mock]" in result.answer  # mock answers are always labelled
@@ -108,7 +108,7 @@ def test_fallback_used_when_primary_fails(tmp_path):
     agent = NotesAgent(config, provider=FailingProvider(), fallback_provider=MockProvider())
     result = agent.ask_detailed("Abhiverse")
     assert result.routing["fallback_used"] is True
-    assert result.routing["attempted"] == ["openai:gpt-4o-mini", "anthropic:claude-test"]
+    assert result.routing["attempted"] == ["mistralai/mistral-small-latest", "anthropic:claude-test"]
     assert result.budget["used"] == 2  # one charge per provider attempt
     assert "[mock]" in result.answer
 
@@ -190,7 +190,7 @@ def test_web_status_and_ask_endpoints(tmp_path):
         )
         with urllib.request.urlopen(req) as resp:
             payload = json.loads(resp.read())
-        assert payload["routing"]["chosen"]["provider"] == "openai"
+        assert payload["routing"]["chosen"]["provider"] == "mistralai"
         assert payload["budget"]["used"] == 1
         assert payload["sources"][0]["title"] == "Abhiverse idea"
     finally:

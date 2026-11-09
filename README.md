@@ -92,7 +92,7 @@ uses the real `otari` Python SDK exactly as documented:
 from otari import OtariClient
 client = OtariClient(platform_token=<OTARI_AI_TOKEN>)
 response = client.completion(
-    model="openai:gpt-4o-mini",
+    model="mistralai/mistral-small-latest",
     messages=[{"role": "system", "content": ...},
               {"role": "user", "content": ...}],
 )
@@ -120,7 +120,7 @@ or token was created for it (that step is the user's, see
 ```bash
 pip install otari
 export OTARI_AI_TOKEN="your-otari-ai-token"   # from otari.ai, never commit it
-export OTARI_MODEL="openai:gpt-4o-mini"
+export OTARI_MODEL="mistralai/mistral-small-latest"
 python3 run.py --provider otari ask "What is Abhiverse for?"
 ```
 

@@ -14,7 +14,7 @@ from pathlib import Path
 class Config:
     notes_root: Path
     provider: str = "auto"  # "auto" | "mock" | "otari"
-    model: str = "openai:gpt-4o-mini"
+    model: str = "mistralai/mistral-small-latest"
     max_chars_per_note: int = 4000
     max_notes_per_answer: int = 3
     max_llm_calls_per_run: int = 5
@@ -45,7 +45,7 @@ def config_from_env(notes_root: Path | None = None) -> Config:
     return Config(
         notes_root=Path(notes_root or os.environ.get("NOTES_ROOT", "notes")),
         provider=os.environ.get("OTARI_PROVIDER", "auto"),
-        model=os.environ.get("OTARI_MODEL", "openai:gpt-4o-mini"),
+        model=os.environ.get("OTARI_MODEL", "mistralai/mistral-small-latest"),
         fallback_model=os.environ.get("OTARI_FALLBACK_MODEL") or None,
         otari_token=token,
         gateway_api_base=os.environ.get("GATEWAY_API_BASE"),

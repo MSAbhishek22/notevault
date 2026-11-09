@@ -86,7 +86,7 @@ Checked 2026-11-03 against the actual code:
 | Name | Purpose | Required for deploy? |
 |---|---|---|
 | `OTARI_AI_TOKEN` | Hosted otari.ai token (real-Otari mode) | No — without it the app runs in labelled mock mode. Required only for the real-Otari run + live video. Never commit it; `.env` is gitignored. |
-| `OTARI_MODEL` | Default model string, format `provider:model` | No — default `openai:gpt-4o-mini` in code. |
+| `OTARI_MODEL` | Default model string, format `provider:model` | No — default `mistralai/mistral-small-latest` in code (verified live on Otari 9 Nov 2026; `openai:gpt-4o-mini` is not offered on Otari). |
 | `OTARI_PROVIDER` | `auto` / `mock` / `otari` | No — default `auto` (mock without credentials, otari with them). Explicit `otari` without credentials fails loudly by design. |
 | `OTARI_FALLBACK_MODEL` | One-step fallback model string | No — optional. |
 | `GATEWAY_API_BASE` | Self-hosted gateway origin (no `/api/v1` suffix) | No — hosted default is `https://api.otari.ai`. |
